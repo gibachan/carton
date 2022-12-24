@@ -345,7 +345,13 @@ public func openInSystemBrowser(url: String) -> Bool {
   )
   do {
     try process.launch()
-    return true
+    let result = try process.waitUntilExit()
+    if case let .terminated(code) = result.exitStatus {
+      if code == 0 {
+        return true
+      }
+    }
+    return false
   } catch {
     return false
   }
